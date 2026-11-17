@@ -76,6 +76,17 @@ pub fn build() -> Command {
             "Use KB_ALLOCATED instead of FILE_SIZE as the policy attribute.",
         );
 
+    let human = Arg::new("human-readable")
+        .short('h')
+        .long("human-readable")
+        .action(ArgAction::SetTrue)
+        .help("human readable output (e.g. 1.2G)")
+        .long_help(
+"Display sizes in human readable form (IEC units like K, M, G) as `du -h` \
+ does. Without this option, sizes are printed as raw bytes.",
+        )
+        .help_heading("Output Fields");
+
     let help = Arg::new("help")
         .short('?')
         .long("help")
@@ -102,11 +113,13 @@ pub fn build() -> Command {
         .arg(max_depth)
         .arg(count_links)
         .arg(kb_allocated)
+        .arg(human)
         .arg(help)
         .arg(version)
         .after_help(
-"Differences to `du`: `mmdu` defaults to summarized and human readable output \
- and uses apparent size, i.e. `FILE_SIZE` as the policy attribute.",
+"Differences to `du`: `mmdu` defaults to summarized output, prints raw \
+ bytes unless -h/--human-readable is given, and uses apparent size, \
+ i.e. `FILE_SIZE` as the policy attribute.",
         )
 }
 

@@ -30,16 +30,24 @@ use bytesize::{ByteSize, Display};
 use crate::config::{ByteMode, Config, CountMode};
 
 pub fn output(dir: &Path, inodes: u64, bytes: u64, config: &Config) {
-    let humanized = match config.byte_mode {
-        ByteMode::FileSize => humanize(ByteSize::b(bytes)),
-        ByteMode::KBAllocated => humanize(ByteSize::kib(bytes)),
+    let size = if config.human {
+        let humanized = match config.byte_mode {
+            ByteMode::FileSize => humanize(ByteSize::b(bytes)),
+            ByteMode::KBAllocated => humanize(ByteSize::kib(bytes)),
+        };
+        humanized.to_string()
+    } else {
+        match config.byte_mode {
+            ByteMode::FileSize => bytes.to_string(),
+            ByteMode::KBAllocated => bytes.saturating_mul(1024).to_string(),
+        }
     };
 
     let dir = dir.display();
 
     match config.count_mode {
-        CountMode::Both => println!("{humanized}\t{inodes}\t{dir}"),
-        CountMode::Bytes => println!("{humanized}\t{dir}"),
+        CountMode::Both => println!("{size}\t{inodes}\t{dir}"),
+        CountMode::Bytes => println!("{size}\t{dir}"),
         CountMode::Inodes => println!("{inodes}\t{dir}"),
     }
 }

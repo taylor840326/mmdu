@@ -39,6 +39,7 @@ pub struct Config {
     pub mm_global_work_dir: Option<PathBuf>,
     pub byte_mode: ByteMode,
     pub count_mode: CountMode,
+    pub human: bool,
 }
 
 impl TryFrom<&ArgMatches> for Config {
@@ -69,6 +70,7 @@ impl TryFrom<&ArgMatches> for Config {
         };
 
         let count_mode = CountMode::from(args);
+        let human = args.get_flag("human-readable");
 
         Ok(Self {
             filter,
@@ -79,6 +81,7 @@ impl TryFrom<&ArgMatches> for Config {
             mm_global_work_dir,
             byte_mode,
             count_mode,
+            human,
         })
     }
 }
